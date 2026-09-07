@@ -248,6 +248,20 @@
   cursor: pointer;
 }
 
+/* Optional heading the host page can render above an embedded calculator. */
+.embed-heading {
+  font-size: clamp(1.6rem, 1.1rem + 1.6vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--primary-dark);
+  margin-bottom: var(--space-2);
+}
+
+.embed-heading + .calculator {
+  padding-top: var(--space-4);
+}
+
 /* ---------- Calculator layout -------------------------------------------- */
 
 .calculator {
@@ -832,6 +846,7 @@
   margin: 0;
   padding-left: var(--space-5);
   font-size: 0.9375rem;
+  list-style: disc;
 }
 
 .error-summary__list li + li {
@@ -1449,6 +1464,7 @@
   color: var(--text-primary);
   display: grid;
   gap: var(--space-2);
+  list-style: disc;
 }
 
 /* ---------- Scenario planner --------------------------------------------- */

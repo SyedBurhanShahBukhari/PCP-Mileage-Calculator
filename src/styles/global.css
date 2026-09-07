@@ -94,6 +94,8 @@ p {
 
 a {
   color: var(--primary);
+  /* Stated explicitly so the embedded build's reset cannot strip it. */
+  text-decoration: underline;
   text-underline-offset: 3px;
 }
 

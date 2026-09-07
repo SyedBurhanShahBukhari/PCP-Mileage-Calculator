@@ -4,3 +4,5 @@ coverage
 *.local
 .DS_Store
 .vite
+dist-wp
+*.tsbuildinfo

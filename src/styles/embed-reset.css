@@ -1,0 +1,142 @@
+/* ==========================================================================
+   Embedded-build defensive reset
+   --------------------------------------------------------------------------
+   Only used by the WordPress/embed bundle, and deliberately loaded first.
+
+   Scoping the calculator's own styles stops them leaking OUT into the host
+   theme, but it does nothing about the reverse: a theme rule such as
+   `label { text-decoration: underline wavy }` or `h3 { text-transform:
+   uppercase }` still reaches INTO the widget, because those selectors match
+   our elements too. This neutralises the properties themes most often impose.
+
+   Specificity is deliberate. The scope class is repeated (`.pcp-mc.pcp-mc`),
+   which matches the same single class but counts twice, so:
+
+     theme `input[type="text"]`      (0,1,1)
+     this reset `.pcp-mc.pcp-mc input` (0,2,1)   <- beats the theme
+     our styles `.pcp-mc.pcp-mc .field__input` (0,3,0)  <- beats this reset
+
+   Our own bare-element rules land at (0,2,1) too, and win on source order
+   because this file is imported first.
+   ========================================================================== */
+
+.pcp-mc.pcp-mc,
+.pcp-mc.pcp-mc h1,
+.pcp-mc.pcp-mc h2,
+.pcp-mc.pcp-mc h3,
+.pcp-mc.pcp-mc h4,
+.pcp-mc.pcp-mc h5,
+.pcp-mc.pcp-mc h6,
+.pcp-mc.pcp-mc p,
+.pcp-mc.pcp-mc a,
+.pcp-mc.pcp-mc span,
+.pcp-mc.pcp-mc div,
+.pcp-mc.pcp-mc section,
+.pcp-mc.pcp-mc aside,
+.pcp-mc.pcp-mc ul,
+.pcp-mc.pcp-mc ol,
+.pcp-mc.pcp-mc li,
+.pcp-mc.pcp-mc dl,
+.pcp-mc.pcp-mc dt,
+.pcp-mc.pcp-mc dd,
+.pcp-mc.pcp-mc form,
+.pcp-mc.pcp-mc fieldset,
+.pcp-mc.pcp-mc legend,
+.pcp-mc.pcp-mc label,
+.pcp-mc.pcp-mc input,
+.pcp-mc.pcp-mc button,
+.pcp-mc.pcp-mc select,
+.pcp-mc.pcp-mc textarea,
+.pcp-mc.pcp-mc table,
+.pcp-mc.pcp-mc caption,
+.pcp-mc.pcp-mc thead,
+.pcp-mc.pcp-mc tbody,
+.pcp-mc.pcp-mc tr,
+.pcp-mc.pcp-mc th,
+.pcp-mc.pcp-mc td,
+.pcp-mc.pcp-mc strong,
+.pcp-mc.pcp-mc em,
+.pcp-mc.pcp-mc small,
+.pcp-mc.pcp-mc svg {
+  font-family: inherit;
+  font-style: normal;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-transform: none;
+  text-decoration: none;
+  text-shadow: none;
+  text-indent: 0;
+  text-align: start;
+  filter: none;
+  transform: none;
+  float: none;
+  clear: none;
+  vertical-align: baseline;
+  background-image: none;
+  animation: none;
+}
+
+/* Block-level elements themes commonly give their own spacing and rules. */
+.pcp-mc.pcp-mc h1,
+.pcp-mc.pcp-mc h2,
+.pcp-mc.pcp-mc h3,
+.pcp-mc.pcp-mc h4,
+.pcp-mc.pcp-mc h5,
+.pcp-mc.pcp-mc h6,
+.pcp-mc.pcp-mc p,
+.pcp-mc.pcp-mc ul,
+.pcp-mc.pcp-mc ol,
+.pcp-mc.pcp-mc li,
+.pcp-mc.pcp-mc dl,
+.pcp-mc.pcp-mc dt,
+.pcp-mc.pcp-mc dd,
+.pcp-mc.pcp-mc figure,
+.pcp-mc.pcp-mc blockquote,
+.pcp-mc.pcp-mc fieldset,
+.pcp-mc.pcp-mc legend,
+.pcp-mc.pcp-mc table,
+.pcp-mc.pcp-mc th,
+.pcp-mc.pcp-mc td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+  color: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  box-shadow: none;
+  border-radius: 0;
+  max-width: none;
+  min-height: 0;
+}
+
+.pcp-mc.pcp-mc ul,
+.pcp-mc.pcp-mc ol {
+  list-style: none;
+}
+
+/* Form controls: themes style these heavily, and sizing matters most here. */
+.pcp-mc.pcp-mc input,
+.pcp-mc.pcp-mc button,
+.pcp-mc.pcp-mc select,
+.pcp-mc.pcp-mc textarea {
+  margin: 0;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  max-width: none;
+  line-height: normal;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: transparent;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/* Themes that decorate headings or links with generated content. */
+.pcp-mc.pcp-mc *::before,
+.pcp-mc.pcp-mc *::after {
+  content: none;
+}

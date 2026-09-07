@@ -17,7 +17,7 @@ const FAQ_SCHEMA = JSON.stringify({
 });
 
 /** Accessible accordion: real buttons, `aria-expanded`, one heading per item. */
-export function Faqs() {
+export function Faqs({ includeSchema = true }: { includeSchema?: boolean }) {
   const [open, setOpen] = useState<string | null>(FAQS[0].id);
 
   return (
@@ -27,7 +27,9 @@ export function Faqs() {
           Frequently asked questions
         </h2>
 
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: FAQ_SCHEMA }} />
+        {includeSchema && (
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: FAQ_SCHEMA }} />
+        )}
 
         <div className="accordion">
           {FAQS.map((faq) => {
