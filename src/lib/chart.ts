@@ -17,7 +17,7 @@ export interface SeriesPoint {
 export type SeriesStyle = 'solid' | 'dashed' | 'dotted';
 
 export interface ChartSeries {
-  id: 'allowance' | 'projection' | 'scenario' | 'actual';
+  id: 'allowance' | 'actual' | 'projection' | 'scenario';
   label: string;
   style: SeriesStyle;
   points: SeriesPoint[];
@@ -31,6 +31,20 @@ export interface ChartModel {
   maxMiles: number;
   /** Odometer at month 0 — the chart's y-axis baseline. */
   minMiles: number;
+  /**
+   * The region between the allowance line and the projected pace, which is the
+   * projected excess (or the unused headroom) made visible. Null when there is
+   * no projection to compare against.
+   */
+  gap: {
+    startMiles: number;
+    allowanceEndMiles: number;
+    projectedEndMiles: number;
+    /** True when the projection finishes above the allowance. */
+    over: boolean;
+    /** Size of the gap at the end of the term, in miles. */
+    endMiles: number;
+  } | null;
 }
 
 /** Straight-line contract allowance from month 0 to the end of the term. */
@@ -43,6 +57,19 @@ export function buildAllowanceSeries(
   return [
     { month: 0, miles: startOdometer },
     { month: termMonths, miles: startOdometer + totalAllowance },
+  ];
+}
+
+/** The miles actually driven so far: month 0 to today. */
+export function buildActualSeries(
+  startOdometer: number,
+  todayMonth: number,
+  currentOdometer: number,
+): SeriesPoint[] {
+  if (todayMonth <= 0) return [];
+  return [
+    { month: 0, miles: startOdometer },
+    { month: todayMonth, miles: currentOdometer },
   ];
 }
 
@@ -85,6 +112,7 @@ export function buildChartModel(
   const term = result.contractLengthMonths;
   const start = result.startOdometerMiles;
   const todayMonth = result.progress.elapsedMonths;
+  const allowanceEnd = start + result.totalAllowanceMiles;
 
   const series: ChartSeries[] = [
     {
@@ -95,13 +123,25 @@ export function buildChartModel(
     },
   ];
 
-  const projection = buildProjectionSeries(start, result.historicalAverageMonthly, term);
-  if (projection.length > 0) {
+  const actual = buildActualSeries(start, todayMonth, result.currentOdometerMiles);
+  if (actual.length > 0) {
+    series.push({ id: 'actual', label: 'Your mileage so far', style: 'solid', points: actual });
+  }
+
+  /*
+   * Only the part of the pace line beyond today is a projection, so only that
+   * part is drawn as a dashed line. Everything to the left really happened.
+   */
+  const projectedEnd = result.projectedEndOdometerMiles;
+  if (projectedEnd !== null && term - todayMonth > 0) {
     series.push({
       id: 'projection',
-      label: 'Your projected pace',
+      label: 'Projected at your current pace',
       style: 'dashed',
-      points: projection,
+      points: [
+        { month: todayMonth, miles: result.currentOdometerMiles },
+        { month: term, miles: projectedEnd },
+      ],
     });
   }
 
@@ -118,7 +158,7 @@ export function buildChartModel(
   }
 
   const allMiles = series.flatMap((s) => s.points.map((p) => p.miles));
-  allMiles.push(result.currentOdometerMiles);
+  allMiles.push(result.currentOdometerMiles, allowanceEnd);
 
   return {
     series,
@@ -127,5 +167,15 @@ export function buildChartModel(
     maxMonth: term,
     maxMiles: Math.max(...allMiles),
     minMiles: Math.min(...allMiles, start),
+    gap:
+      projectedEnd === null
+        ? null
+        : {
+            startMiles: start,
+            allowanceEndMiles: allowanceEnd,
+            projectedEndMiles: projectedEnd,
+            over: projectedEnd > allowanceEnd,
+            endMiles: Math.abs(projectedEnd - allowanceEnd),
+          },
   };
 }

@@ -122,15 +122,41 @@ describe('chart series (UT-073..076)', () => {
     expect(series.at(-1)?.miles).toBeCloseTo(30000, 6);
   });
 
-  it('builds a model with allowance, projection and scenario series', () => {
+  it('splits the pace line into miles already driven and the projection ahead', () => {
     const model = buildChartModel(calculatePCPMileage(input()), 525);
     expect(model.series.map((series) => series.id)).toEqual([
       'allowance',
+      'actual',
       'projection',
       'scenario',
     ]);
-    // Each series is distinguishable without colour.
+
+    // Only the part beyond today is drawn as a projection.
+    const actual = model.series.find((series) => series.id === 'actual');
+    const projection = model.series.find((series) => series.id === 'projection');
+    expect(actual?.style).toBe('solid');
+    expect(actual?.points.at(-1)).toEqual({ month: 14, miles: 18450 });
+    expect(projection?.style).toBe('dashed');
+    expect(projection?.points[0]).toEqual({ month: 14, miles: 18450 });
+    expect(projection?.points.at(-1)?.miles).toBeCloseTo(47442.8571, 4);
+
+    // Identity never depends on colour alone.
     expect(new Set(model.series.map((series) => series.style)).size).toBe(3);
+  });
+
+  it('measures the gap between the allowance and the projected pace', () => {
+    const model = buildChartModel(calculatePCPMileage(input()));
+    expect(model.gap?.over).toBe(true);
+    // The gap at the end of the term is exactly the projected excess.
+    expect(model.gap?.endMiles).toBeCloseTo(17442.8571, 4);
+  });
+
+  it('reports the gap as unused headroom when the pace stays under the allowance', () => {
+    const model = buildChartModel(
+      calculatePCPMileage(input({ elapsedMonthsManual: 18, currentOdometerMiles: 10000 })),
+    );
+    expect(model.gap?.over).toBe(false);
+    expect(model.gap?.endMiles).toBeCloseTo(10000, 6);
   });
 });
 

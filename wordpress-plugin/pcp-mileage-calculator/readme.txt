@@ -4,7 +4,7 @@ Tags: calculator, car finance, pcp, mileage, motoring
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -105,6 +105,13 @@ The colours are CSS custom properties on the `.pcp-mc` wrapper, so you can overr
 3. The what-if planner comparing current pace against a chosen pace.
 
 == Changelog ==
+
+= 1.1.0 =
+* Redesigned the results dashboard: each result now leads with a single large figure rather than a paragraph.
+* Replaced the two separate progress bars with one pace meter carrying an "on-pace" marker, so the comparison is read in one place.
+* Rebuilt the mileage chart. The gap between your contract allowance and your projected pace is now shaded and quantified, the pace line is solid for miles already driven and dashed only for the projection ahead, each line is labelled at its end, and hovering (or focusing and using the arrow keys) shows a tooltip for any month.
+* Projected end-of-contract figures are now compact stat tiles, with the estimated charge as the focal figure.
+* Tightened the chart's y-axis so the top gridline sits close to the data.
 
 = 1.0.0 =
 * First release: calculator, validation, chart, what-if planner, VAT and tiered-rate handling, end-of-agreement wording, block and shortcode.

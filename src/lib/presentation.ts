@@ -17,6 +17,11 @@ export interface StatusPresentation {
   tone: StatusTone;
   /** Short text label — status is never communicated by colour alone. */
   label: string;
+  /** The dashboard's single hero figure. */
+  heroValue: string;
+  /** Reads directly after the hero figure, completing the sentence. */
+  heroCaption: string;
+  /** Full sentence, used for screen-reader announcements and the share text. */
   headline: string;
   detail: string;
 }
@@ -32,6 +37,8 @@ export function describeStatus(result: CalculationResult): StatusPresentation {
         status: result.status,
         tone: 'negative',
         label: 'Allowance exceeded',
+        heroValue: over,
+        heroCaption: 'over your total contract allowance',
         headline: `You've already exceeded your total contract allowance by ${over}`,
         detail:
           'Driving less from now can limit additional excess mileage, but it cannot remove mileage you have already driven.',
@@ -42,6 +49,8 @@ export function describeStatus(result: CalculationResult): StatusPresentation {
         status: result.status,
         tone: 'warning',
         label: 'Over pace',
+        heroValue: formatMilesWithUnit(variance),
+        heroCaption: 'ahead of your allowance pace',
         headline: `You're ${formatMilesWithUnit(variance)} ahead of your mileage allowance pace`,
         detail: `To finish within ${allowance}, you'll need to drive less than your recent average for the rest of the agreement.`,
       };
@@ -50,6 +59,8 @@ export function describeStatus(result: CalculationResult): StatusPresentation {
         status: result.status,
         tone: 'positive',
         label: 'Under pace',
+        heroValue: formatMilesWithUnit(variance),
+        heroCaption: 'under your allowance pace',
         headline: `You're ${formatMilesWithUnit(variance)} under your expected mileage pace`,
         detail: `At your current driving rate you're projected to finish within your ${allowance} allowance.`,
       };
@@ -58,6 +69,8 @@ export function describeStatus(result: CalculationResult): StatusPresentation {
       return {
         status: 'ON_TRACK',
         tone: 'positive',
+        heroValue: 'On track',
+        heroCaption: `within ${formatMilesWithUnit(DEFAULT_PACE_TOLERANCE_MILES)} of your allowance pace`,
         label: 'On track',
         headline: "You're on track",
         detail: `Your mileage is within ${formatMilesWithUnit(DEFAULT_PACE_TOLERANCE_MILES)} of the straight-line allowance pace for ${allowance}.`,
@@ -130,6 +143,6 @@ export function describeSafeMileage(result: CalculationResult): {
   }
   return {
     exceeded: false,
-    supporting: `You have ${formatMilesWithUnit(result.remainingAllowanceMiles)} remaining across approximately ${formatMonths(result.progress.remainingMonths)}.`,
+    supporting: `Spread across the ${formatMonths(result.progress.remainingMonths)} left on your agreement.`,
   };
 }

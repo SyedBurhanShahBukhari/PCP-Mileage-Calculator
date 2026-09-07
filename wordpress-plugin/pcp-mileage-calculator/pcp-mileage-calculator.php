@@ -3,7 +3,7 @@
  * Plugin Name:       PCP Mileage Calculator
  * Plugin URI:        https://github.com/SyedBurhanShahBukhari/PCP-Mileage-Calculator
  * Description:       An accessible PCP mileage calculator. Shows whether a driver is on track, how many miles they can safely drive from now, and an estimated excess mileage charge. Everything is calculated in the visitor's browser — nothing is sent to a server.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            PCP Mileage
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // No direct file access.
 }
 
-define( 'PCP_MILEAGE_CALCULATOR_VERSION', '1.0.0' );
+define( 'PCP_MILEAGE_CALCULATOR_VERSION', '1.1.0' );
 define( 'PCP_MILEAGE_CALCULATOR_FILE', __FILE__ );
 define( 'PCP_MILEAGE_CALCULATOR_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PCP_MILEAGE_CALCULATOR_URL', plugin_dir_url( __FILE__ ) );

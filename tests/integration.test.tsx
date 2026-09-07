@@ -68,16 +68,17 @@ describe('IT-001 reference regression through the UI', () => {
     });
     await calculate();
 
-    expect(screen.getByTestId('status-headline')).toHaveTextContent(
-      "You're 6,783 miles ahead of your mileage allowance pace",
+    expect(screen.getByTestId('status-hero')).toHaveTextContent('6,783 miles');
+    expect(screen.getByTestId('status-caption')).toHaveTextContent(
+      'ahead of your allowance pace',
     );
     expect(screen.getByTestId('safe-monthly')).toHaveTextContent('525');
     expect(screen.getByTestId('safe-weekly')).toHaveTextContent('121');
     expect(screen.getByTestId('projected-end-mileage')).toHaveTextContent('47,443 miles');
     expect(screen.getByTestId('projected-excess')).toHaveTextContent('17,443 miles');
     expect(screen.getByTestId('estimated-charge')).toHaveTextContent('£1,395.43');
-    expect(screen.getByText('38.9%')).toBeInTheDocument();
-    expect(screen.getByText('61.5%')).toBeInTheDocument();
+    expect(screen.getByTestId('time-elapsed-pct')).toHaveTextContent('38.9%');
+    expect(screen.getByTestId('allowance-used-pct')).toHaveTextContent('61.5%');
   });
 });
 
@@ -109,7 +110,7 @@ describe('mileage status journeys', () => {
     });
     await calculate();
 
-    expect(screen.getByText('On track')).toBeInTheDocument();
+    expect(screen.getByTestId('status-hero')).toHaveTextContent('On track');
     expect(screen.getByTestId('projected-end-mileage')).toHaveTextContent('30,000 miles');
   });
 
@@ -141,7 +142,7 @@ describe('mileage status journeys', () => {
 
     expect(screen.getByText('20,000 miles')).toBeInTheDocument();
     // 32,000 raw miles would be 106.7% of the allowance; 20,000 driven is 66.7%.
-    expect(screen.getByText('66.7%')).toBeInTheDocument();
+    expect(screen.getByTestId('allowance-used-pct')).toHaveTextContent('66.7%');
   });
 
   it('IT-011 clamps the safe target once the total allowance is exceeded', async () => {
@@ -155,8 +156,9 @@ describe('mileage status journeys', () => {
     });
     await calculate();
 
-    expect(screen.getByTestId('status-headline')).toHaveTextContent(
-      /exceeded your total contract allowance by 1,200 miles/i,
+    expect(screen.getByTestId('status-hero')).toHaveTextContent('1,200 miles');
+    expect(screen.getByTestId('status-caption')).toHaveTextContent(
+      'over your total contract allowance',
     );
     expect(screen.getByTestId('safe-monthly')).toHaveTextContent('0 miles remaining');
     expect(screen.getByText(/cannot remove mileage already driven/i)).toBeInTheDocument();
